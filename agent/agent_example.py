@@ -1,10 +1,10 @@
 import os
+import asyncio
 import requests
-from langchain.agents import Tool, initialize_agent
-from langchain.agents.agent_types import AgentType
-from langchain_ollama import OllamaLLM
+from langchain.agents import Tool
 from langchain_community.utilities import SerpAPIWrapper
-from langchain.memory import ConversationBufferMemory
+from langgraph.prebuilt import create_react_agent
+from langchain_ollama.chat_models import ChatOllama
 
 SERP_API_KEY = os.getenv("SERP_API_KEY")
 if not SERP_API_KEY:
@@ -24,7 +24,6 @@ weather_tool = Tool(
 
 # General-purpose search tool using SerpAPI
 def serp_search(search_text: str) -> str:
-    
     search = SerpAPIWrapper(serpapi_api_key=SERP_API_KEY)
     return search.run(search_text)
 
@@ -34,26 +33,23 @@ search_tool = Tool(
     description="Search anything using Google via SerpAPI. Input should be a natural language search query. Can be used to search flights"
 )
 
-# Use a local Ollama model
-llm = OllamaLLM(model="qwen3:0.6b")  # Or 'mistral', 'llama2', etc.
 
-# Add memory
-memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+async def main():
+    tools = [search_tool, weather_tool]
+    agent = create_react_agent(
+        ChatOllama(model="llama3.2:1b"),
+        tools
+    )
+    msg = input("You: ")
+    while msg.lower() != "exit":
+        response = await agent.ainvoke(
+            {"messages": [{"role": "user", "content": msg}]}
+        )
+        for msg in response["messages"]:
+            msg.pretty_print()
+        msg = input("You: ")
 
-# Initialize the agent
-agent = initialize_agent(
-    tools=[search_tool, weather_tool],
-    llm=llm,
-    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-    verbose=True,
-    memory=memory
-)
 
-
-print("Chat with your agent! Type 'exit' to quit.\n")
-while True:
-    user_input = input("You: ")
-    if user_input.lower() == "exit":
-        break
-    response = agent.run(user_input)
-    print("Agent:", response)
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
