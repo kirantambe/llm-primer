@@ -192,5 +192,13 @@ AI agents can encompass a wide range of functionalities beyond natural language 
 
 These agents can be deployed in various applications to solve complex tasks in various enterprise contexts from software design and IT automation to code-generation tools and conversational assistants. They use the advanced natural language processing techniques of large language models (LLMs) to comprehend and respond to user inputs step-by-step and determine when to call on external tools.
 
-A code example of a simple RAG application is provided [here](agent)
+A code example of a simple agentic application is provided [here](agent)
+</details>
+
+<details>
+<Summary>What is MCP? </summary>
+
+Today, we're open-sourcing the Model Context Protocol (MCP), a new standard for connecting AI assistants to the systems where data lives, including content repositories, business tools, and development environments. Its aim is to help frontier models produce better, more relevant responses.
+
+A code example a MCP server and a langchain agent using the MCP can be found here [here](mcp)
 </details>
