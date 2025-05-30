@@ -180,6 +180,8 @@ Then just type your questions or prompts!
 <Summary>What is RAG? </summary>
 Retrieval-augmented generation is a technique that enables large language models to retrieve and incorporate new information. With RAG, LLMs do not respond to user queries until they refer to a specified set of documents. These documents supplement information from the LLM's pre-existing training data.
 
+  ![RAG](images/rag.png)
+  
 A code example of a simple RAG application is provided [here](rag)
 </details>
 
